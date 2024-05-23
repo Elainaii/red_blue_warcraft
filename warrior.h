@@ -13,7 +13,9 @@
 
 #include "string"
 #include "iostream"
+#include "weapon.h"
 enum warriorType{DRAGON, NINJA, ICEMAN, LION, WOLF};
+
 class warrior {//各种武士的基类
  private:
 	int id;//编号
@@ -32,35 +34,49 @@ class warrior {//各种武士的基类
 };
 class dragon : public warrior {
  private:
+	double morale;
+	weapon weapon1;
  public:
-	dragon(int id);
+	dragon(int id,double morale);
 	~dragon(){}
+	weapon getWeapon() const{return weapon1;}
+	double getMorale() const{return morale;}
 	static int preHp;
 	std::string getName() const override{return "dragon";}
 	warriorType getType() const override{return DRAGON;}
 };
 class ninja : public warrior {
+ private:
+	weapon weapon1;
+	weapon weapon2;
  public:
 	ninja(int id);
 	~ninja(){}
 	static int preHp;
+	weapon getWeapon() const{return weapon1;}
+	weapon getWeapon2() const{return weapon2;}
 	std::string getName() const override{return "ninja";}
 	warriorType getType() const override{return NINJA;}
 };
 class iceman : public warrior {
+ private:
+	weapon weapon1;
  public:
 	iceman(int id);
 	~iceman(){}
 	static int preHp;
+	weapon getWeapon() const{return weapon1;}
 	std::string getName() const override{return "iceman";}
 	warriorType getType() const override{return ICEMAN;}
 };
 class lion : public warrior {
  private:
+	int loyalty;
  public:
-	lion(int id);
+	lion(int id,int loyalty);
 	~lion(){}
 	static int preHp;
+	int getLoyalty() const{return loyalty;}
 	std::string getName() const override{return "lion";}
 	warriorType getType() const override{return LION;}
 };

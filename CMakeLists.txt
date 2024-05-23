@@ -9,4 +9,6 @@ add_executable(warCraft main.cpp
         gameManager.cpp
         gameManager.h
         headquarter.cpp
-        headquarter.h)
+        headquarter.h
+        weapon.h
+        weapon.cpp)
