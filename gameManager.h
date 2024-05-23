@@ -5,13 +5,13 @@
 #ifndef WARCRAFT__GAMEMANAGER_H_
 #define WARCRAFT__GAMEMANAGER_H_
 #include "iostream"
-#include "knight.h"
+#include "warrior.h"
 #include "headquarter.h"
 class warCraft {
  private:
 	int event = 1;
-	const std::vector<knightType> redOrder = {ICEMAN, LION, WOLF, NINJA, DRAGON};
-	const std::vector<knightType> blueOrder = {LION, DRAGON, NINJA, ICEMAN, WOLF};
+	const std::vector<warriorType> redOrder = {ICEMAN, LION, WOLF, NINJA, DRAGON};
+	const std::vector<warriorType> blueOrder = {LION, DRAGON, NINJA, ICEMAN, WOLF};
 	headquarter red;
 	headquarter blue;
  public:

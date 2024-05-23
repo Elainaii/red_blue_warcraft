@@ -4,8 +4,8 @@ project(warCraft)
 set(CMAKE_CXX_STANDARD 11)
 
 add_executable(warCraft main.cpp
-        knight.cpp
-        knight.h
+        warrior.cpp
+        warrior.h
         gameManager.cpp
         gameManager.h
         headquarter.cpp

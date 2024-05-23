@@ -3,16 +3,16 @@
 //
 
 #include "headquarter.h"
-headquarter::headquarter(int sp, const std::string& color, std::vector<knightType> produceOrder) : sp(sp), color(color), produceOrder(produceOrder), roll(0) {
+headquarter::headquarter(int sp, const std::string& color, std::vector<warriorType> produceOrder) : sp(sp), color(color), produceOrder(produceOrder), roll(0) {
 	for (int i = 0; i < produceOrder.size(); i++) {
-		knightNum[produceOrder[i]] = 0;
+		warriorNum[produceOrder[i]] = 0;
 	}
 }
 void headquarter::produce(int id) {
 	int time = 5;
 	while (time--) {//循环5次
-		knightType k = produceOrder[roll%5];//获取现在该生产的武士
-		knight * t;
+		warriorType k = produceOrder[roll%5];//获取现在该生产的武士
+		warrior * t;
 		bool flag = false;//这一轮是否生产成功
 		switch (k) {
 		case DRAGON:
@@ -20,8 +20,8 @@ void headquarter::produce(int id) {
 				t = new dragon(id);
 				sp -= dragon::preHp;
 				flag = true;
-				knightNum[DRAGON]++;
-				std::cout<<color<<" dragon "<<id<<" born with strength "<<dragon::preHp<<","<<knightNum[DRAGON]<<" dragon in "<<color<<" headquarter"<<std::endl;
+				warriorNum[DRAGON]++;
+				std::cout<<color<<" dragon "<<id<<" born with strength "<<dragon::preHp<<","<<warriorNum[DRAGON]<<" dragon in "<<color<<" headquarter"<<std::endl;
 			}
 			break;
 		case NINJA:
@@ -29,8 +29,8 @@ void headquarter::produce(int id) {
 				t = new ninja(id);
 				sp -= ninja::preHp;
 				flag = true;
-				knightNum[NINJA]++;
-				std::cout<<color<<" ninja "<<id<<" born with strength "<<ninja::preHp<<","<<knightNum[NINJA]<<" ninja in "<<color<<" headquarter"<<std::endl;
+				warriorNum[NINJA]++;
+				std::cout<<color<<" ninja "<<id<<" born with strength "<<ninja::preHp<<","<<warriorNum[NINJA]<<" ninja in "<<color<<" headquarter"<<std::endl;
 			}
 			break;
 		case ICEMAN:
@@ -38,8 +38,8 @@ void headquarter::produce(int id) {
 				t = new iceman(id);
 				sp -= iceman::preHp;
 				flag = true;
-				knightNum[ICEMAN]++;
-				std::cout<<color<<" iceman "<<id<<" born with strength "<<iceman::preHp<<","<<knightNum[ICEMAN]<<" iceman in "<<color<<" headquarter"<<std::endl;
+				warriorNum[ICEMAN]++;
+				std::cout<<color<<" iceman "<<id<<" born with strength "<<iceman::preHp<<","<<warriorNum[ICEMAN]<<" iceman in "<<color<<" headquarter"<<std::endl;
 			}
 			break;
 		case LION:
@@ -47,8 +47,8 @@ void headquarter::produce(int id) {
 				t = new lion(id);
 				sp -= lion::preHp;
 				flag = true;
-				knightNum[LION]++;
-				std::cout<<color<<" lion "<<id<<" born with strength "<<lion::preHp<<","<<knightNum[LION]<<" lion in "<<color<<" headquarter"<<std::endl;
+				warriorNum[LION]++;
+				std::cout<<color<<" lion "<<id<<" born with strength "<<lion::preHp<<","<<warriorNum[LION]<<" lion in "<<color<<" headquarter"<<std::endl;
 			}
 			break;
 		case WOLF:
@@ -56,15 +56,15 @@ void headquarter::produce(int id) {
 				t = new wolf(id);
 				sp -= wolf::preHp;
 				flag = true;
-				knightNum[WOLF]++;
-				std::cout<<color<<" wolf "<<id<<" born with strength "<<wolf::preHp<<","<<knightNum[WOLF]<<" wolf in "<<color<<" headquarter"<<std::endl;
+				warriorNum[WOLF]++;
+				std::cout<<color<<" wolf "<<id<<" born with strength "<<wolf::preHp<<","<<warriorNum[WOLF]<<" wolf in "<<color<<" headquarter"<<std::endl;
 			}
 			break;
 		}
 		roll++;
 		if(flag){
-			knightList.push_back(t);//加入武士列表
-			knightNum[k]++;//该武士数量加1
+			warriorList.push_back(t);//加入武士列表
+			warriorNum[k]++;//该武士数量加1
 			return;
 		}
 	}

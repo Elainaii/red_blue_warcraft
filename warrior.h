@@ -2,8 +2,8 @@
 // Created by Elaina on 2024/5/16.
 //
 
-#ifndef WARCRAFT__KNIGHT_H_
-#define WARCRAFT__KNIGHT_H_
+#ifndef WARCRAFT__warrior_H_
+#define WARCRAFT__warrior_H_
 
 #define DRAGON_ATK 20
 #define NINJA_ATK 30
@@ -13,64 +13,64 @@
 
 #include "string"
 #include "iostream"
-enum knightType{DRAGON, NINJA, ICEMAN, LION, WOLF};
-class knight {//各种武士的基类
+enum warriorType{DRAGON, NINJA, ICEMAN, LION, WOLF};
+class warrior {//各种武士的基类
  private:
 	int id;//编号
 	int atk;//攻击力
 	int hp;//生命值
-	knightType type;
+	warriorType type;
  protected:
  public://该类武士初始生命值,应该在gameManager初始化
-	knight(int id,int atk,int hp);
-	virtual ~knight();
+	warrior(int id,int atk,int hp);
+	virtual ~warrior();
 	int getId() const;
 	int getAtk() const;
 	int getHp() const;
-	virtual knightType getType() const = 0;
+	virtual warriorType getType() const = 0;
 	virtual std::string getName() const = 0;
 };
-class dragon : public knight {
+class dragon : public warrior {
  private:
  public:
 	dragon(int id);
 	~dragon(){}
 	static int preHp;
 	std::string getName() const override{return "dragon";}
-	knightType getType() const override{return DRAGON;}
+	warriorType getType() const override{return DRAGON;}
 };
-class ninja : public knight {
+class ninja : public warrior {
  public:
 	ninja(int id);
 	~ninja(){}
 	static int preHp;
 	std::string getName() const override{return "ninja";}
-	knightType getType() const override{return NINJA;}
+	warriorType getType() const override{return NINJA;}
 };
-class iceman : public knight {
+class iceman : public warrior {
  public:
 	iceman(int id);
 	~iceman(){}
 	static int preHp;
 	std::string getName() const override{return "iceman";}
-	knightType getType() const override{return ICEMAN;}
+	warriorType getType() const override{return ICEMAN;}
 };
-class lion : public knight {
+class lion : public warrior {
  private:
  public:
 	lion(int id);
 	~lion(){}
 	static int preHp;
 	std::string getName() const override{return "lion";}
-	knightType getType() const override{return LION;}
+	warriorType getType() const override{return LION;}
 };
-class wolf : public knight {
+class wolf : public warrior {
  public:
 	wolf(int id);
 	~wolf(){}
 	static int preHp;
 	std::string getName() const override{return "wolf";}
-	knightType getType() const override{return WOLF;}
+	warriorType getType() const override{return WOLF;}
 };
 
-#endif //WARCRAFT__KNIGHT_H_
+#endif //WARCRAFT__warrior_H_
