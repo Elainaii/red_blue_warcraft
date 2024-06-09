@@ -2,8 +2,9 @@
 // Created by Elaina on 2024/5/16.
 //
 
+#include <iomanip>
 #include "warrior.h"
-
+#include "iostream"
 int dragon::preHp = 0;
 int ninja::preHp = 0;
 int iceman::preHp = 0;
@@ -24,15 +25,36 @@ int warrior::getAtk() const {
 int warrior::getHp() const {
 	return hp;
 }
+bool warrior::suffer(int damage) {
+	hp -= damage;
+	if(hp<=0)
+		return true;
+	return false;
+}
+void warrior::reportWeapon(int Time,std::string color) const {
+	int sword = 0,bomb = 0,arrow = 0;
+	for(auto i:weaponList){
+		if(i.getWeaponType()==SWORD)
+			sword++;
+		else if(i.getWeaponType()==BOMB)
+			bomb++;
+		else if(i.getWeaponType()==ARROW)
+			arrow++;
+	}
+	std::cout<<std::setw(3)<<std::setfill('0')<<Time%1000<<":"<<"55 "<<color<<" "<<getName()<<" "<<id<<" has ";
+	std::cout<<sword<<" sword "<<bomb<<" bomb "<<arrow<<" arrow and "<<hp<<" elements\n";
+}
 
-dragon::dragon(int id,double morale) : warrior(id,DRAGON_ATK,dragon::preHp), morale(morale), weapon1(DRAGON_ATK,weaponType(id%3)) {
+dragon::dragon(int id,double morale) : warrior(id,DRAGON_ATK,dragon::preHp), morale(morale){
+	weaponList.push_back(weapon(DRAGON_ATK,weaponType(id%3)));
 
 }
-ninja::ninja(int id) : warrior(id,NINJA_ATK,ninja::preHp), weapon1(NINJA_ATK,weaponType(id%3)), weapon2(NINJA_ATK,weaponType((id+1)%3)){
-
+ninja::ninja(int id) : warrior(id,NINJA_ATK,ninja::preHp){
+	weaponList.push_back(weapon(NINJA_ATK,weaponType(id%3)));
+	weaponList.push_back(weapon(NINJA_ATK,weaponType((id+1)%3)));
 }
-iceman::iceman(int id) : warrior(id,ICEMAN_ATK,iceman::preHp), weapon1(ICEMAN_ATK,weaponType(id%3)){
-
+iceman::iceman(int id) : warrior(id,ICEMAN_ATK,iceman::preHp){
+	weaponList.push_back(weapon(ICEMAN_ATK,weaponType(id%3)));
 }
 lion::lion(int id,int loyalty) : warrior(id,LION_ATK,lion::preHp) , loyalty(loyalty){
 

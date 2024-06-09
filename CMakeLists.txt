@@ -11,4 +11,6 @@ add_executable(warCraft main.cpp
         headquarter.cpp
         headquarter.h
         weapon.h
-        weapon.cpp)
+        weapon.cpp
+        Event.h
+        Event.h)

@@ -13,6 +13,7 @@ class weapon {
  public:
 	weapon(int atk, weaponType type);
 	std::string getType() const;
+	weaponType getWeaponType() const{return type;}
 };
 
 #endif //WARCRAFT__WEAPON_H_
