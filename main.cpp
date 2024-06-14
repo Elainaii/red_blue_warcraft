@@ -2,8 +2,8 @@
 #include "gameManager.h"
 
 void run(int c){
-	int sp;
-	std::cin>>sp;
+	int m,n,k,t;
+
 	warCraft game(sp);
 	int dragon, ninja, iceman, lion, wolf;
 	std::cin>>dragon>>ninja>>iceman>>lion>>wolf;
