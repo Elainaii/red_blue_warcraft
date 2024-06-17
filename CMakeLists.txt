@@ -13,4 +13,5 @@ add_executable(warCraft main.cpp
         weapon.h
         weapon.cpp
         Event.h
-        Event.h)
+        Event.h
+        Event.cpp)

@@ -13,6 +13,11 @@ int iceman::preHp = 0;
 int lion::preHp = 0;
 int wolf::preHp = 0;
 int lion::loyaltyDecrease = 0;
+int warrior::DRAGON_ATK = 0;
+int warrior::NINJA_ATK = 0;
+int warrior::ICEMAN_ATK = 0;
+int warrior::LION_ATK = 0;
+int warrior::WOLF_ATK = 0;
 warrior::warrior(int id,bool color ,int atk, int hp,int city):id(id), atk(atk), hp(hp), city(city),color(color){
 
 }
@@ -50,7 +55,7 @@ std::string warrior::reportWeapon() const {//武士只要返回字符串就行�
 //	ans += color+" "+getName()+" "+std::to_string(id)+" has "+std::to_string(sword)
 //		+" sword "+std::to_string(bomb)+" bomb "+std::to_string(arrow)+" arrow and "
 //		+std::to_string(hp)+" elements\n";
-	oss<<color<<" "<<getName()<<" "<<id<<" has "<<sword<<" sword "<<bomb<<" bomb "<<arrow<<" arrow and "<<hp<<" elements\n";
+	oss<<(color==0?"red":"blue")<<" "<<getName()<<" "<<id<<" has "<<sword<<" sword "<<bomb<<" bomb "<<arrow<<" arrow and "<<hp<<" elements\n";
 	return oss.str();
 
 }
@@ -70,13 +75,14 @@ void warrior::sortWeapon2() {
 	});
 }
 void warrior::ttk(warrior& enemy) {
-	if(weaponList.empty())
+	if(weaponList.empty()){
 		return;
-	if(weaponList[ttkRound % weaponList.size()].use(enemy,*this)==0){//判断是否用坏
+	}
+	weaponList[ttkRound % weaponList.size()].reset(atk);
+	if(weaponList[ttkRound % weaponList.size()].use(enemy,*this)){//判断是否用坏
 		removeWeapon(ttkRound % weaponList.size());
 	}
 	ttkRound++;
-	backup();
 }
 
 void warrior::win(warrior& enemy) {//胜利后的操作
@@ -99,7 +105,7 @@ bool warrior::isInfluenced() {
 	if(preWeaponList.size()!=weaponList.size())
 		return true;
 	for(int i =0;i<preWeaponList.size();i++){
-		if(preWeaponList[i].getWeaponType()!=weaponList[i].getWeaponType())
+		if(preWeaponList[i].getWeaponType()!=weaponList[i].getWeaponType()||preWeaponList[i].getDurability()!=weaponList[i].getDurability())
 			return true;
 	}
 	return false;
@@ -117,20 +123,20 @@ iceman::iceman(int id,int color,int city) : warrior(id,color,ICEMAN_ATK,iceman::
 	weaponList.push_back(weapon(ICEMAN_ATK,weaponType(id%3)));
 }
 lion::lion(int id,int color,int loyalty,int city) : warrior(id,color,LION_ATK,lion::preHp,city) , loyalty(loyalty){
-
+	weaponList.push_back(weapon(LION_ATK,weaponType(id%3)));
 }
 wolf::wolf(int id,int color,int city) : warrior(id,color,WOLF_ATK,wolf::preHp,city) {
 
 }
 std::string wolf::rob(warrior& enemy) {
-	if(weaponList.size()>=10)
+	if(weaponList.size()>=10||enemy.weaponList.empty())
 		return "";
 	enemy.sortWeapon2();
 	int num = 1;
 	int max = 10 - weaponList.size();
 	std::string ansstr;
 	int i = 0;
-	while(enemy.getWeapon(i).getWeaponType()==enemy.getWeapon(i+1).getWeaponType()){
+	while(enemy.weaponList.size()>=i+2&&enemy.getWeapon(i).getWeaponType()==enemy.getWeapon(i+1).getWeaponType()){
 		num++;
 		i++;
 	}
@@ -143,4 +149,14 @@ std::string wolf::rob(warrior& enemy) {
 		enemy.removeWeapon(0);
 	}
 	return ansstr;
+}
+
+void warrior::removeWeapon(int i) {
+
+	weaponList.erase(weaponList.begin()+i);
+}
+weapon& warrior::getWeapon(int i) {
+	if(i>weaponList.size()-1)
+		throw std::out_of_range("out of range");
+	return weaponList[i];
 }

@@ -5,16 +5,11 @@
 #ifndef WARCRAFT__warrior_H_
 #define WARCRAFT__warrior_H_
 
-#define DRAGON_ATK 20
-#define NINJA_ATK 30
-#define ICEMAN_ATK 35
-#define LION_ATK 40
-#define WOLF_ATK 50
-
 #include "string"
 #include "iostream"
 #include "weapon.h"
 #include "vector"
+class weapon;
 enum warriorType{DRAGON, NINJA, ICEMAN, LION, WOLF};
 
 class warrior {//各种武士的基类
@@ -29,7 +24,6 @@ class warrior {//各种武士的基类
 	std::vector<weapon> preWeaponList;//上一次的武器列表
 	int hp;
 	int prehp;
-	std::vector<weapon> weaponList;
  public://该类武士初始生命值,应该在gameManager初始化
 	warrior(int id,bool color,int atk,int hp,int city);
 	virtual ~warrior();
@@ -39,12 +33,13 @@ class warrior {//各种武士的基类
 	int getCity() const{return city;}
 	bool getColor() const{return color;}
 	void changeCity(int City){this->city = City;}
-	weapon& getWeapon(int i) {return weaponList[i];}
-	void removeWeapon(int i) {weaponList.erase(weaponList.begin()+i);}
+	weapon& getWeapon(int i);
+	void removeWeapon(int i);
 	void sortWeapon();//排序武器，按编号排序
 	void sortWeapon2();//缴获时的排序
 	void ttk(warrior& enemy);//武士打架
 	void backup();//复制武器列表和hp到pre中
+	void resetTtkRound(){ttkRound = 0;}
 	bool isInfluenced();//检查是否有变化
 	bool checkInfluence();//检查是否有变化
 	void win(warrior& enemy);//胜利
@@ -54,9 +49,14 @@ class warrior {//各种武士的基类
 	std::string reportWeapon() const;
 	virtual warriorType getType() const = 0;
 	virtual std::string getName() const = 0;
-//武器列表
-//生命值
 
+	static int DRAGON_ATK;
+	static int NINJA_ATK;
+	static int ICEMAN_ATK;
+	static int LION_ATK;
+	static int WOLF_ATK;
+
+	std::vector<weapon> weaponList;
 };
 class dragon : public warrior {
  private:

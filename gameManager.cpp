@@ -5,7 +5,9 @@
 #include "gameManager.h"
 #include "sstream"
 void warCraft::gameStart() {
-
+	int a = 1;
+	std::cout<<a;
+	eventControl();
 }
 warCraft::warCraft(int sp,int cityNum,int loyaltyDecrease,int timeLimit)://这里的城市数量不包括司令部
 cityNum(cityNum),
@@ -14,7 +16,11 @@ blue(sp,cityNum+1,cityNum+2,"blue",blueOrder,cityList,eventManager),
 eventManager(cityNum,timeLimit)
 {
 	lion::setLoyaltyDecrease(loyaltyDecrease);
-
+	timeLimitHour = timeLimit/60;//时间限制小时,time从0开始
+	cityList.resize(cityNum+2);
+	for(int i=0;i<cityNum+2;i++){
+		cityList[i].resize(2);
+	}
 }
 void warCraft::hpSet(int dragon, int ninja, int iceman, int lion, int wolf) {
 	dragon::preHp = dragon;
@@ -23,14 +29,9 @@ void warCraft::hpSet(int dragon, int ninja, int iceman, int lion, int wolf) {
 	lion::preHp = lion;
 	wolf::preHp = wolf;
 }
-void warCraft::firstSet(int cityNum, int loyaltyDecrease) {
-	cityList.resize(cityNum+2);
-	for(int i=0;i<cityNum+2;i++){
-		cityList[i].resize(2);
-	}
-}
+
 void warCraft::eventControl() {
-	while (1){
+	while (Time<=timeLimitHour){
 		//每个小时的第0分， 双方的司令部中各有一个武士降生
 		red.produce(Time);
 		blue.produce(Time);
@@ -41,7 +42,6 @@ void warCraft::eventControl() {
 		if(red.warriorMove(Time) + blue.warriorMove(Time)){
 			break;
 		}
-
 		//在每个小时的第35分：在有wolf及其敌人的城市，wolf要抢夺对方的武器。
 		red.wolfRob(Time);
 		//在每个小时的第40分：在有两个武士的城市，会发生战斗。
@@ -55,6 +55,7 @@ void warCraft::eventControl() {
 		//武士到达对方司令部后就算完成任务了，从此就呆在那里无所事事。
 		//任何一方的司令部里若是出现了敌人，则认为该司令部已被敌人占领。
 		//任何一方的司令部被敌人占领，则战争结束。战争结束之后就不会发生任何事情了。
+		//eventManager.outputEvent(Time);
 		Time++;
 	}
 }
@@ -66,15 +67,19 @@ void warCraft::warriorTTK() {
 			redw->sortWeapon();
 			redw->backup();
 			bluew->sortWeapon();
+			bluew->backup();
 			if(i%2==1){//奇数城市红先攻击
 				bool flag = 0;//这里的flag用来判断是否二者都至少进行了一次攻击
 				while(1){
 					redw->ttk(*bluew);
+//					if(judgeTTK(redw,bluew,flag))
+//						break;
+					if(!bluew->isDead())
+						bluew->ttk(*redw);
 					if(judgeTTK(redw,bluew,flag))
 						break;
-					bluew->ttk(*redw);
-					if(judgeTTK(redw,bluew,flag))
-						break;
+					redw->backup();
+					bluew->backup();
 					flag = 1;
 				}
 			}
@@ -82,14 +87,17 @@ void warCraft::warriorTTK() {
 				bool flag = 0;
 				while(1){
 					bluew->ttk(*redw);
+//					if(judgeTTK(redw,bluew,flag))
+//						break;
+					if(!redw->isDead())
+						redw->ttk(*bluew);
 					if(judgeTTK(redw,bluew,flag))
 						break;
-					redw->ttk(*bluew);
-					if(judgeTTK(redw,bluew,flag))
-						break;
+					redw->backup();
+					bluew->backup();
 					flag = 1;
 				}
-			}//TODO:现在你大概写完了武士打架，检查一下有没有bug
+			}
 
 		}
 	}
@@ -98,7 +106,7 @@ bool warCraft::judgeTTK(warrior* redw, warrior* bluew,bool flag) {//结束了返
 	if(redw->isDead()&&bluew->isDead()){
 		//两败俱伤
 		std::stringstream oss;
-		oss << "both red" << redw->getName() << " " << redw->getId() << " and blue " << bluew->getName() << " " << bluew->getId() << " died in city " << redw->getCity() << std::endl;
+		oss << "both red " << redw->getName() << " " << redw->getId() << " and blue " << bluew->getName() << " " << bluew->getId() << " died in city " << redw->getCity() << std::endl;
 		Event eve(Time,redw->getCity(),0,TTK,oss.str());
 		eventManager.addEvent(eve);
 		red.warriorDie(redw);
@@ -111,6 +119,12 @@ bool warCraft::judgeTTK(warrior* redw, warrior* bluew,bool flag) {//结束了返
 		oss << "blue " << bluew->getName() << " " << bluew->getId() << " killed red " << redw->getName() << " " << redw->getId() << " in city " << redw->getCity() << " remaining " << bluew->getHp() << " elements" << std::endl;
 		Event eve(Time,redw->getCity(),0,TTK,oss.str());
 		eventManager.addEvent(eve);
+		if(bluew->getType()==DRAGON){
+			Event yell_2(Time,redw->getCity(),1,YELL,"blue " + bluew->getName() + " " + std::to_string(bluew->getId()) + " yelled in city " + std::to_string(redw->getCity())+"\n");
+			eventManager.addEvent(yell_2);
+		}
+		bluew->win(*redw);
+		bluew->resetTtkRound();
 		red.warriorDie(redw);
 		return 1;
 	}
@@ -120,20 +134,63 @@ bool warCraft::judgeTTK(warrior* redw, warrior* bluew,bool flag) {//结束了返
 		oss << "red " << redw->getName() << " " << redw->getId() << " killed blue " << bluew->getName() << " " << bluew->getId() << " in city " << redw->getCity() << " remaining " << redw->getHp() << " elements" << std::endl;
 		Event eve(Time,redw->getCity(),0,TTK,oss.str());
 		eventManager.addEvent(eve);
+		if(redw->getType()==DRAGON){
+			Event yell_1(Time,redw->getCity(),0,YELL,"red " + redw->getName() + " " + std::to_string(redw->getId()) + " yelled in city " + std::to_string( redw->getCity())+"\n");
+			eventManager.addEvent(yell_1);
+		}
+		redw->win(*bluew);
+		redw->resetTtkRound();
 		blue.warriorDie(bluew);
 		return 1;
 	}
 	else{
 		//都没死
+		if(redw->weaponList.empty()&&bluew->weaponList.empty()){
+			//都没武器
+			std::stringstream oss;
+			oss << "both red " << redw->getName() << " " << redw->getId() << " and blue " << bluew->getName() << " " << bluew->getId() << " were alive in city " << redw->getCity() << std::endl;
+			Event eve(Time,redw->getCity(),0,TTK,oss.str());
+			eventManager.addEvent(eve);
+			redw->resetTtkRound();
+			bluew->resetTtkRound();
+			if(redw->getType()==DRAGON){
+				Event yell_1(Time,redw->getCity(),0,YELL,"red " + redw->getName() + " " + std::to_string(redw->getId()) + " yelled in city " + std::to_string( redw->getCity())+"\n");
+				eventManager.addEvent(yell_1);
+			}
+			if(bluew->getType()==DRAGON){
+				Event yell_2(Time,redw->getCity(),1,YELL,"blue " + bluew->getName() + " " + std::to_string(bluew->getId()) + " yelled in city " + std::to_string(redw->getCity())+"\n");
+				eventManager.addEvent(yell_2);
+			}
+			return 1;
+		}
+
 		if(!redw->isInfluenced()&&!bluew->isInfluenced()&&flag){//无变化
 			std::stringstream oss;
 			oss << "both red " << redw->getName() << " " << redw->getId() << " and blue " << bluew->getName() << " " << bluew->getId() << " were alive in city " << redw->getCity() << std::endl;
 			Event eve(Time,redw->getCity(),0,TTK,oss.str());
 			eventManager.addEvent(eve);
+			if(redw->getType()==DRAGON){
+				Event yell_1(Time,redw->getCity(),0,YELL,"red " + redw->getName() + " " + std::to_string(redw->getId()) + " yelled in city " + std::to_string( redw->getCity())+"\n");
+				eventManager.addEvent(yell_1);
+			}
+			if(bluew->getType()==DRAGON){
+				Event yell_2(Time,redw->getCity(),1,YELL,"blue " + bluew->getName() + " " + std::to_string(bluew->getId()) + " yelled in city " + std::to_string(redw->getCity())+"\n");
+				eventManager.addEvent(yell_2);
+			}
 			return 1;
 		}
 		return 0;
 	}
 
+}
+void warCraft::outputEvent() {
+	eventManager.outputEvent();
+}
+void warCraft::atkSet(int dragon, int ninja, int iceman, int lion, int wolf) {
+	warrior::DRAGON_ATK = dragon;
+	warrior::NINJA_ATK = ninja;
+	warrior::ICEMAN_ATK = iceman;
+	warrior::LION_ATK = lion;
+	warrior::WOLF_ATK = wolf;
 }
 

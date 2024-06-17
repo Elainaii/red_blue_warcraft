@@ -40,7 +40,8 @@ bool weapon::use(warrior& enemy, warrior& self) {
 	}
 	else if(type==BOMB){
 		enemy.suffer(atk);
-		self.suffer(atk*5/10);
+		if(self.getType()!=NINJA)
+			self.suffer(atk*5/10);
 		reduceDurability();
 		return true;
 	}
@@ -49,3 +50,15 @@ bool weapon::use(warrior& enemy, warrior& self) {
 		return reduceDurability();
 	}
 }
+void weapon::reset(int atk) {
+	if(type==SWORD){
+		this->atk = atk*2/10;
+	}
+	else if(type==BOMB){
+		this->atk = atk*4/10;
+	}
+	else if(type==ARROW){
+		this->atk = atk*3/10;
+	}
+}
+

@@ -6,6 +6,8 @@
 #define WARCRAFT__WEAPON_H_
 #include "string"
 #include "warrior.h"
+class weapon;
+class warrior;
 enum weaponType{SWORD=0, BOMB, ARROW};//武器编号类型
 class weapon {
  private:
@@ -14,6 +16,7 @@ class weapon {
 	weaponType type;
  public:
 	weapon(int atk, weaponType type);
+	void reset(int atk);
 	int getAtk() const{return atk;}
 	bool use(warrior &enemy,warrior& self);//武器用坏了返回true
 	int getDurability() const{return durability;}

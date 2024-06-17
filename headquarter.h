@@ -14,9 +14,10 @@ class headquarter {
 	std::string color;//阵营
 	bool colorFlag;//0代表红方,1代表蓝方
 	int city;//所在城市
-	int cityNum;//城市数量
+	const int cityNum;//城市数量
 	int roll = 0;//当前生产的武士
 	int id = 1;//生产的武士编号
+	bool isStop = false;//是否停止生产
 
 	std::vector<std::vector<warrior*>> & cityList;//城市列表引用
 	EventControl& eventManager;//事件管理器引用
@@ -32,9 +33,9 @@ class headquarter {
 	void wolfRob(int Time);
 	bool warriorMove(int Time);
 	void warriorDie(warrior * w);//这里不输出
-	//TODO:现在你写完了移动和时间输出管理，接下来写武士打架
 	int getSp() const{return sp;}
 	void produce(int Time);
+	bool isStopped(){return isStop;}
 };
 
 #endif //WARCRAFT__HEADQUARTER_H_
