@@ -125,7 +125,7 @@ void headquarter::produce(int Time) {//你，为什么改了生产规则？？�
 	roll++;
 	if (flag) {
 		warriorList.push_back(t);//加入武士列表
-		warriorNum[k]++;//该武士数量加1
+		//warriorNum[k]++;//该武士数量加1
 		id++;
 		return;
 	}
