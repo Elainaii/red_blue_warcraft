@@ -64,7 +64,7 @@ void headquarter::produce(int id) {
 		roll++;
 		if(flag){
 			knightList.push_back(t);//加入武士列表
-			knightNum[k]++;//该武士数量加1
+			//knightNum[k]++;//该武士数量加1
 			return;
 		}
 	}
