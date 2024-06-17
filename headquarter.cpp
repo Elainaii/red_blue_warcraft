@@ -24,7 +24,7 @@ void headquarter::produce(int id) {
 				flag = true;
 				warriorNum[DRAGON]++;
 				std::cout<<color<<" dragon "<<id<<" born with strength "<<dragon::preHp<<","<<warriorNum[DRAGON]<<" dragon in "<<color<<" headquarter"<<std::endl;
-				std::cout<<"It has a "<<temp->getWeapon().getType()<<" and it's morale is "<<std::fixed<<std::setprecision(2)<<temp->getMorale()<<std::endl;
+				std::cout<<"It has a "<<temp->getWeapon().getType()<<",and it's morale is "<<std::fixed<<std::setprecision(2)<<temp->getMorale()<<std::endl;
 			}
 			break;
 		case NINJA:
@@ -72,7 +72,7 @@ void headquarter::produce(int id) {
 		roll++;
 		if(flag){
 			warriorList.push_back(t);//加入武士列表
-			warriorNum[k]++;//该武士数量加1
+			//warriorNum[k]++;//该武士数量加1
 			return;
 		}
 	}
